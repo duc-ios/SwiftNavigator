@@ -1,0 +1,6 @@
+framework module Pods_SwiftNavigator_Example {
+  umbrella header "Pods-SwiftNavigator_Example-umbrella.h"
+
+  export *
+  module * { export * }
+}

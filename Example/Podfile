@@ -1,0 +1,13 @@
+use_frameworks!
+
+platform :ios, '9.0'
+
+target 'SwiftNavigator_Example' do
+  pod 'SwiftNavigator', :path => '../'
+
+  target 'SwiftNavigator_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end

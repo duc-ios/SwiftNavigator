@@ -1,0 +1,30 @@
+{
+  "name": "SwiftNavigator",
+  "version": "0.1.0",
+  "summary": "A short description of SwiftNavigator.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/duc-ios/SwiftNavigator",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "Duc iOS": "duc.nh2012@gmail.com"
+  },
+  "source": {
+    "git": "https://github.com/duc-ios/SwiftNavigator.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "9.0"
+  },
+  "source_files": "SwiftNavigator/Classes/**/*",
+  "dependencies": {
+    "RxCocoa": [
+
+    ],
+    "NSObject+Rx": [
+
+    ]
+  }
+}

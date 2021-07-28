@@ -1,0 +1,6 @@
+framework module SwiftNavigator {
+  umbrella header "SwiftNavigator-umbrella.h"
+
+  export *
+  module * { export * }
+}
