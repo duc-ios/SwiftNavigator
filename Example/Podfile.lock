@@ -1,15 +1,9 @@
 PODS:
   - "NSObject+Rx (5.2.1)":
     - RxSwift (~> 6.0)
-  - RxCocoa (6.2.0):
-    - RxRelay (= 6.2.0)
-    - RxSwift (= 6.2.0)
-  - RxRelay (6.2.0):
-    - RxSwift (= 6.2.0)
   - RxSwift (6.2.0)
-  - SwiftNavigator (0.1.0):
+  - SwiftNavigator (0.0.2):
     - "NSObject+Rx"
-    - RxCocoa
 
 DEPENDENCIES:
   - SwiftNavigator (from `../`)
@@ -17,8 +11,6 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - "NSObject+Rx"
-    - RxCocoa
-    - RxRelay
     - RxSwift
 
 EXTERNAL SOURCES:
@@ -27,11 +19,9 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   "NSObject+Rx": 49ffbf55ad0bbc29a44547db63a9e33caf0c5d60
-  RxCocoa: 4baf94bb35f2c0ab31bc0cb9f1900155f646ba42
-  RxRelay: e72dbfd157807478401ef1982e1c61c945c94b2f
   RxSwift: d356ab7bee873611322f134c5f9ef379fa183d8f
-  SwiftNavigator: 27148d403022fe5a25698f3f5feab1c3f73e7c3a
+  SwiftNavigator: b13c75277e2a22ee168330eac343a0a9bd850d69
 
 PODFILE CHECKSUM: b4607a13e2b53acc38252965d6f82a1df3f366ce
 
-COCOAPODS: 1.10.1
+COCOAPODS: 1.11.2

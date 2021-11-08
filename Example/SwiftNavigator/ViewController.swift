@@ -28,13 +28,13 @@ class ViewController: UIViewController {
         stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         
         pushButton.setTitle("Push", for: [])
-        pushButton.addAction(UIAction(handler: { _ in
-            Navigator.push(Scene.sceneA())
+        pushButton.addAction(UIAction(handler: { [unowned self] _ in
+            Navigator.push(Scene.sceneA(), context: self)
         }), for: .touchUpInside)
         
         showButton.setTitle("Show", for: [])
-        showButton.addAction(UIAction(handler: { _ in
-            Navigator.show(Scene.sceneB())
+        showButton.addAction(UIAction(handler: { [unowned self] _ in
+            Navigator.show(Scene.sceneB(), context: self)
         }), for: .touchUpInside)
     }
     
@@ -53,6 +53,7 @@ extension Scene {
     static func sceneA() -> Scene {
         let scene = UIViewController()
         scene.view.backgroundColor = .orange
+        scene.view.addGestureRecognizer(UITapGestureRecognizer(target: scene, action: #selector(UIViewController.close)))
         return Scene(scene)
     }
     static func sceneB() -> Scene {
@@ -64,5 +65,11 @@ extension Scene {
 }
 
 extension UIViewController {
-    @objc func close() { dismiss(animated: true, completion: nil) }
+    @objc func close() {
+        if navigationController != nil {
+            Navigator.pop(context: self)
+        } else {
+            Navigator.dismiss(context: self)
+        }
+    }
 }

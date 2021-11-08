@@ -7,7 +7,6 @@
 
 import Foundation
 import UIKit
-import RxCocoa
 import RxSwift
 import NSObject_Rx
 
@@ -32,39 +31,14 @@ public protocol SceneProtocol {
 
 public final class Navigator {
     
-    enum SceneError: Error, LocalizedError {
-        case noNavigationControllerFound
-        case sceneNotInStack
-        
-        var errorDescription: String? {
-            switch self {
-            case .noNavigationControllerFound:
-                return "No navigation controller found"
-            case .sceneNotInStack:
-                return "Scene not in stack"
-            }
-        }
-    }
-    
     public static var window: UIWindow = {
         let window = UIWindow(frame: UIScreen.main.bounds)
         window.makeKeyAndVisible()
         return window
     }()
     
-    public static var topNavigationController: UINavigationController? {
-        if let navigationController = window.visibleViewController?.tabBarController?.navigationController {
-            return navigationController
-        } else if let navigationController = window.visibleViewController?.navigationController {
-            return navigationController
-        } else if let navigationController = window.rootViewController as? UINavigationController {
-            return navigationController
-        }
-        return nil
-    }
-    
     @discardableResult
-    public static func root(_ scene: SceneProtocol) -> Completable {
+    public static func root(_ scene: SceneProtocol, context: UIViewController? = nil) -> Completable {
         start { subject in
             let scene = scene.scene
             scene.modalTransitionStyle = .crossDissolve
@@ -74,7 +48,7 @@ public final class Navigator {
     }
     
     @discardableResult
-    public static func rootWithNav(_ scene: SceneProtocol) -> Completable {
+    public static func rootWithNav(_ scene: SceneProtocol, context: UIViewController? = nil) -> Completable {
         start { subject in
             let scene = scene.sceneWithNav
             scene.modalTransitionStyle = .crossDissolve
@@ -84,7 +58,7 @@ public final class Navigator {
     }
     
     @discardableResult
-    public static func show(_ scene: SceneProtocol, style: UIModalPresentationStyle = .fullScreen, delegate: UIViewControllerTransitioningDelegate? = nil, animated: Bool = true) -> Completable {
+    public static func show(_ scene: SceneProtocol, style: UIModalPresentationStyle = .fullScreen, delegate: UIViewControllerTransitioningDelegate? = nil, animated: Bool = true, context: UIViewController? = nil) -> Completable {
         start { subject in
             let scene = scene.scene
             if let delegate = delegate {
@@ -100,7 +74,7 @@ public final class Navigator {
     }
     
     @discardableResult
-    public static func showWithNav(_ scene: SceneProtocol, style: UIModalPresentationStyle = .fullScreen, delegate: UIViewControllerTransitioningDelegate? = nil, animated: Bool = true) -> Completable {
+    public static func showWithNav(_ scene: SceneProtocol, style: UIModalPresentationStyle = .fullScreen, delegate: UIViewControllerTransitioningDelegate? = nil, animated: Bool = true, context: UIViewController? = nil) -> Completable {
         start { subject in
             let scene = scene.scene
             let nav = UINavigationController(rootViewController: scene)
@@ -117,7 +91,7 @@ public final class Navigator {
     }
     
     @discardableResult
-    public static func dismiss(animated: Bool = true) -> Completable {
+    public static func dismiss(animated: Bool = true, context: UIViewController? = nil) -> Completable {
         start { subject in
             window.visibleViewController?.dismiss(animated: animated, completion: {
                 subject.onCompleted()
@@ -126,28 +100,28 @@ public final class Navigator {
     }
     
     @discardableResult
-    public static func push(_ scene: SceneProtocol, animated: Bool = true) -> Completable {
+    public static func push(_ scene: SceneProtocol, animated: Bool = true, context: UIViewController? = nil) -> Completable {
         start { _, nav in
             nav.pushViewController(scene.scene, animated: animated)
         }
     }
     
     @discardableResult
-    public static func pop(animated: Bool = true) -> Completable {
+    public static func pop(animated: Bool = true, context: UIViewController? = nil) -> Completable {
         start { _, nav in
             nav.popViewController(animated: animated)
         }
     }
     
     @discardableResult
-    public static func pop(until: @escaping ((UIViewController) -> Bool), animated: Bool = true, offset: Int = 0) -> Completable {
+    public static func pop(until: @escaping ((UIViewController) -> Bool), animated: Bool = true, offset: Int = 0, context: UIViewController? = nil) -> Completable {
         start { subject, nav in
             var popToIdx = nav.viewControllers.firstIndex(where: { until($0) })
             popToIdx? += offset
             if let popToIdx = popToIdx, (0..<nav.viewControllers.count).contains(popToIdx) {
                 nav.popToViewController(nav.viewControllers[popToIdx], animated: animated)
             } else {
-                subject.onError(SceneError.sceneNotInStack)
+                subject.onError("Scene not in stack")
             }
         }
     }
@@ -160,7 +134,7 @@ public final class Navigator {
     }
     
     @discardableResult
-    public static func replace(_ scene: SceneProtocol, animated: Bool = true) -> Completable {
+    public static func replace(_ scene: SceneProtocol, animated: Bool = true, context: UIViewController? = nil) -> Completable {
         start { _, nav in
             let scene = scene.scene
             var viewControllers = nav.viewControllers
@@ -179,10 +153,10 @@ public final class Navigator {
             .asCompletable()
     }
     
-    static private func start(handler: ((PublishSubject<Void>, UINavigationController) -> Void)?) -> Completable {
+    static private func start(handler: ((PublishSubject<Void>, UINavigationController) -> Void)?, context: UIViewController? = nil) -> Completable {
         start { subject in
-            guard let nav = topNavigationController else {
-                subject.onError(SceneError.noNavigationControllerFound)
+            guard let nav = context?.navigationController ?? window.topNavigationController else {
+                subject.onError("No navigation controller found")
                 return
             }
             CATransaction.begin()
@@ -221,4 +195,19 @@ public extension UIWindow {
             return vc
         }
     }
+    
+    var topNavigationController: UINavigationController? {
+        if let navigationController = visibleViewController?.tabBarController?.navigationController {
+            return navigationController
+        } else if let navigationController = visibleViewController?.navigationController {
+            return navigationController
+        } else if let navigationController = rootViewController as? UINavigationController {
+            return navigationController
+        }
+        return nil
+    }
+}
+
+extension String: LocalizedError {
+    public var errorDescription: String? { self }
 }
