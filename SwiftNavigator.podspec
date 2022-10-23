@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'SwiftNavigator'
-  s.version          = '0.0.2'
+  s.version          = '0.0.3'
   s.summary          = 'SwiftNavigator.'
   s.swift_versions   = '5.0'
 
