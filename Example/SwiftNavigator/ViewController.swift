@@ -11,9 +11,10 @@ import SwiftNavigator
 
 class ViewController: UIViewController {
     
-    lazy var stackView = UIStackView(arrangedSubviews: [pushButton, showButton])
+    lazy var stackView = UIStackView(arrangedSubviews: [pushButton, showButton, popButton])
     let pushButton = UIButton(type: .system)
     let showButton = UIButton(type: .system)
+    let popButton = UIButton(type: .system)
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,6 +36,11 @@ class ViewController: UIViewController {
         showButton.setTitle("Show", for: [])
         showButton.addAction(UIAction(handler: { [unowned self] _ in
             Navigator.show(Scene.sceneB(), context: self)
+        }), for: .touchUpInside)
+        
+        popButton.setTitle("Pop", for: [])
+        popButton.addAction(UIAction(handler: { _ in
+            Navigator.pop()
         }), for: .touchUpInside)
     }
     

@@ -106,9 +106,19 @@ public final class Navigator {
         }
     }
     
+    public static func canPop(context: UIViewController? = nil) -> Bool {
+        ((context?.navigationController ?? window.topNavigationController)?.viewControllers.count ?? 0) > 1
+    }
+    
     @discardableResult
     public static func pop(animated: Bool = true, context: UIViewController? = nil) -> Completable {
-        start { _, nav in
+        guard canPop(context: context)
+        else {
+            let error = "Cannot pop!"
+            debugPrint(error)
+            return .error(error)
+        }
+        return start { _, nav in
             nav.popViewController(animated: animated)
         }
     }
